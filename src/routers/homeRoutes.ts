@@ -3,9 +3,8 @@ import path from "path";
 
 const router = Router();
 
-// Route to serve index.html
 router.get("/", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "views", "index.html"));
+  res.sendFile(path.join(__dirname, "../../public/views/index.html"));
 });
 
 export default router;
