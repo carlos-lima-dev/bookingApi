@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { validationResult } from "express-validator";
+import {Request, Response} from "express";
+import {validationResult} from "express-validator";
 
 import {
   getAllAppointments,
@@ -7,9 +7,10 @@ import {
   modifyAppointment,
   removeAppointment,
   getByDate,
+  findAppointmentByDateTime,
 } from "../services/appointmentsService";
-import { IAppointment } from "../interfaces/interfaces";
-import { sendAppointmentConfirmation } from "../services/emailServices";
+import {IAppointment} from "../interfaces/interfaces";
+import {sendAppointmentConfirmation} from "../services/emailServices";
 
 export const getAppointments = async (
   req: Request,
@@ -32,12 +33,27 @@ export const createAppointment = async (
 ): Promise<void> => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({ errors: errors.array() });
+    res.status(400).json({errors: errors.array()});
     return;
   }
 
   try {
     const appointmentData: IAppointment = req.body;
+
+    // 🔍 Verifica se já existe um agendamento para a mesma data e hora
+    const existingAppointment = await findAppointmentByDateTime(
+      appointmentData.date,
+      appointmentData.time,
+      appointmentData.artist
+    );
+
+    if (existingAppointment) {
+      res.status(400).json({
+        message: "This time slot is already booked. Please choose another one.",
+      });
+      return;
+    }
+
     const appointment = await addAppointment(appointmentData);
 
     await sendAppointmentConfirmation(appointmentData.email, {
@@ -49,10 +65,10 @@ export const createAppointment = async (
 
     res.status(201).json(appointment);
   } catch (error) {
-    console.error("Erro ao criar agendamento:", error);
+    console.error("Error creating appointment:", error);
 
     res.status(500).json({
-      message: "Erro interno ao criar agendamento.",
+      message: "Internal error while creating appointment.",
     });
   }
 };
@@ -63,7 +79,7 @@ export const updateAppointment = async (
 ): Promise<void> => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({ errors: errors.array() });
+    res.status(400).json({errors: errors.array()});
     return;
   }
 
@@ -74,7 +90,7 @@ export const updateAppointment = async (
     const updatedAppointment = await modifyAppointment(id, appointmentData);
 
     if (!updatedAppointment) {
-      res.status(404).json({ message: "Agendamento não encontrado" });
+      res.status(404).json({message: "Agendamento não encontrado"});
       return;
     }
 
@@ -97,11 +113,11 @@ export const deleteAppointment = async (
     const deleted = await removeAppointment(id);
 
     if (!deleted) {
-      res.status(404).json({ message: "Agendamento não encontrado" });
+      res.status(404).json({message: "Agendamento não encontrado"});
       return;
     }
 
-    res.status(200).json({ message: "Agendamento eliminado." });
+    res.status(200).json({message: "Agendamento eliminado."});
   } catch (error) {
     console.error("Erro ao excluir agendamento:", error);
     res.status(500).json({
@@ -117,7 +133,7 @@ export const getAppointmentsForDate = async (
   const date = req.query.date as string;
 
   if (!date) {
-    res.status(400).json({ message: "Parâmetro 'date' é obrigatório" });
+    res.status(400).json({message: "Parâmetro 'date' é obrigatório"});
     return;
   }
 

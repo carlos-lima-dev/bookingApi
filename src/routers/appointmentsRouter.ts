@@ -1,4 +1,4 @@
-import { Router } from "express";
+import {Router} from "express";
 import {
   getAppointments,
   createAppointment,
@@ -6,28 +6,29 @@ import {
   deleteAppointment,
   getAppointmentsForDate,
 } from "../controllers/appointmentsController";
-import { check } from "express-validator";
-import { verifyToken } from "../middleware/authMiddleware";
+import {check} from "express-validator";
+import {verifyToken} from "../middleware/authMiddleware";
+import {appointmentLimiter} from "../middleware/rateLimiter";
 const router = Router();
 
 /**
  * @swagger
  * tags:
  *   name: Appointments
- *   description: Gerenciamento de agendamentos
+ *   description: Appointment management
  */
 
 /**
  * @swagger
  * /appointments:
  *   get:
- *     summary: Retorna todos os agendamentos
+ *     summary: Returns all appointments
  *     tags: [Appointments]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Lista de agendamentos
+ *         description: List of appointments
  *         content:
  *           application/json:
  *             schema:
@@ -42,7 +43,7 @@ router.get("/", verifyToken, getAppointments);
  * @swagger
  * /appointments:
  *   post:
- *     summary: Cria um novo agendamento
+ *     summary: Creates a new appointment
  *     tags: [Appointments]
  *     requestBody:
  *       required: true
@@ -52,13 +53,13 @@ router.get("/", verifyToken, getAppointments);
  *             $ref: '#/components/schemas/Appointment'
  *     responses:
  *       201:
- *         description: Agendamento criado com sucesso
+ *         description: Appointment created successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Appointment'
  *       400:
- *         description: Dados inválidos
+ *         description: Invalid data
  *         content:
  *           application/json:
  *             schema:
@@ -76,18 +77,17 @@ router.get("/", verifyToken, getAppointments);
  */
 router.post(
   "/",
+  appointmentLimiter,
   [
-    check("customerName")
-      .notEmpty()
-      .withMessage("Nome do cliente é obrigatório"),
-    check("email").isEmail().withMessage("E-mail inválido"),
+    check("customerName").notEmpty().withMessage("Customer name is required"),
+    check("email").isEmail().withMessage("Invalid email"),
     check("phone")
-      .isLength({ min: 9, max: 9 })
-      .withMessage("Telefone deve ter 9 dígitos"),
-    check("date").notEmpty().withMessage("Data é obrigatória"),
-    check("time").notEmpty().withMessage("Hora é obrigatória"),
-    check("service").notEmpty().withMessage("Serviço é obrigatório"),
-    check("artist").notEmpty().withMessage("Artista é obrigatório"),
+      .isLength({min: 9, max: 9})
+      .withMessage("Phone number must have 9 digits"),
+    check("date").notEmpty().withMessage("Date is required"),
+    check("time").notEmpty().withMessage("Time is required"),
+    check("service").notEmpty().withMessage("Service is required"),
+    check("artist").notEmpty().withMessage("Artist is required"),
   ],
   createAppointment
 );
@@ -96,7 +96,7 @@ router.post(
  * @swagger
  * /appointments/{id}:
  *   put:
- *     summary: Atualiza um agendamento
+ *     summary: Updates an appointment
  *     tags: [Appointments]
  *     security:
  *       - bearerAuth: []
@@ -104,7 +104,7 @@ router.post(
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do agendamento
+ *         description: Appointment ID
  *         schema:
  *           type: string
  *     requestBody:
@@ -115,31 +115,29 @@ router.post(
  *             $ref: '#/components/schemas/Appointment'
  *     responses:
  *       200:
- *         description: Agendamento atualizado com sucesso
+ *         description: Appointment updated successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Appointment'
  *       400:
- *         description: Dados inválidos
+ *         description: Invalid data
  *       404:
- *         description: Agendamento não encontrado
+ *         description: Appointment not found
  */
 
 router.put(
   "/:id",
   [
-    check("customerName")
-      .notEmpty()
-      .withMessage("Nome do cliente é obrigatório"),
-    check("email").isEmail().withMessage("E-mail inválido"),
+    check("customerName").notEmpty().withMessage("Customer name is required"),
+    check("email").isEmail().withMessage("Invalid email"),
     check("phone")
-      .isLength({ min: 9, max: 9 })
-      .withMessage("Telefone deve ter 9 dígitos"),
-    check("date").notEmpty().withMessage("Data é obrigatória"),
-    check("time").notEmpty().withMessage("Hora é obrigatória"),
-    check("service").notEmpty().withMessage("Serviço é obrigatório"),
-    check("artist").notEmpty().withMessage("Artista é obrigatório"),
+      .isLength({min: 9, max: 9})
+      .withMessage("Phone number must have 9 digits"),
+    check("date").notEmpty().withMessage("Date is required"),
+    check("time").notEmpty().withMessage("Time is required"),
+    check("service").notEmpty().withMessage("Service is required"),
+    check("artist").notEmpty().withMessage("Artist is required"),
   ],
   verifyToken,
   updateAppointment
@@ -149,7 +147,7 @@ router.put(
  * @swagger
  * /appointments/{id}:
  *   delete:
- *     summary: Remove um agendamento
+ *     summary: Removes an appointment
  *     tags: [Appointments]
  *     security:
  *       - bearerAuth: []
@@ -157,14 +155,14 @@ router.put(
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do agendamento
+ *         description: Appointment ID
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Agendamento removido com sucesso
+ *         description: Appointment removed successfully
  *       404:
- *         description: Agendamento não encontrado
+ *         description: Appointment not found
  */
 
 router.delete("/:id", verifyToken, deleteAppointment);
@@ -173,7 +171,7 @@ router.delete("/:id", verifyToken, deleteAppointment);
  * @swagger
  * /appointments/by-date:
  *   get:
- *     summary: Busca agendamentos por data
+ *     summary: Fetch appointments by date
  *     tags: [Appointments]
  *     security:
  *       - bearerAuth: []
@@ -181,13 +179,13 @@ router.delete("/:id", verifyToken, deleteAppointment);
  *       - in: query
  *         name: date
  *         required: true
- *         description: Data no formato YYYY-MM-DD
+ *         description: Date in YYYY-MM-DD format
  *         schema:
  *           type: string
  *           format: date
  *     responses:
  *       200:
- *         description: Lista de agendamentos para a data fornecida
+ *         description: List of appointments for the provided date
  *         content:
  *           application/json:
  *             schema:
@@ -195,7 +193,7 @@ router.delete("/:id", verifyToken, deleteAppointment);
  *               items:
  *                 $ref: '#/components/schemas/Appointment'
  *       400:
- *         description: Data inválida ou não fornecida
+ *         description: Invalid or missing date
  */
 
 router.get("/by-date", verifyToken, getAppointmentsForDate);

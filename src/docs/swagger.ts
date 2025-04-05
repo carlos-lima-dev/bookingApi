@@ -1,5 +1,5 @@
-import { Express } from "express";
-import swaggerJSDoc, { Options } from "swagger-jsdoc";
+import {Express} from "express";
+import swaggerJSDoc, {Options} from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
 export default function setupSwagger(app: Express) {
@@ -7,9 +7,9 @@ export default function setupSwagger(app: Express) {
     definition: {
       openapi: "3.0.0",
       info: {
-        title: "API de Agendamentos",
+        title: "Appointments API",
         version: "1.0.0",
-        description: "Documentação da API de agendamentos de serviços.",
+        description: "Service Scheduling API Documentation.",
       },
       components: {
         securitySchemes: {
@@ -20,17 +20,25 @@ export default function setupSwagger(app: Express) {
           },
         },
         schemas: {
+          LoginRequest: {
+            type: "object",
+            properties: {
+              username: {type: "string"},
+              password: {type: "string"},
+            },
+            required: ["username", "password"],
+          },
           Appointment: {
             type: "object",
             properties: {
-              customerName: { type: "string" },
-              email: { type: "string", format: "email" },
-              phone: { type: "string" },
-              date: { type: "string", format: "date-time" },
-              time: { type: "string" },
-              service: { type: "string" },
-              artist: { type: "string" },
-              notes: { type: "string" },
+              customerName: {type: "string"},
+              email: {type: "string", format: "email"},
+              phone: {type: "string"},
+              date: {type: "string", format: "date"},
+              time: {type: "string"},
+              service: {type: "string"},
+              artist: {type: "string"},
+              notes: {type: "string"},
             },
             required: [
               "customerName",
@@ -41,14 +49,6 @@ export default function setupSwagger(app: Express) {
               "service",
               "artist",
             ],
-          },
-          LoginRequest: {
-            type: "object",
-            properties: {
-              username: { type: "string" },
-              password: { type: "string" },
-            },
-            required: ["username", "password"],
           },
         },
       },

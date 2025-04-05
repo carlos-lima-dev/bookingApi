@@ -1,6 +1,6 @@
 // src/services/appointmentsService.ts
 import Appointment from "../models/Appointment";
-import { IAppointment } from "../interfaces/interfaces";
+import {IAppointment} from "../interfaces/interfaces";
 
 export const getAllAppointments = async (): Promise<IAppointment[]> => {
   return await Appointment.find();
@@ -11,6 +11,18 @@ export const addAppointment = async (
 ): Promise<IAppointment> => {
   const appointment = new Appointment(appointmentData);
   return await appointment.save();
+};
+
+export const findAppointmentByDateTime = async (
+  date: string,
+  time: string,
+  artist?: string
+): Promise<IAppointment | null> => {
+  return await Appointment.findOne({
+    date,
+    time,
+    ...(artist && {artist}),
+  });
 };
 
 export const modifyAppointment = async (
@@ -47,7 +59,7 @@ export const removeOldAppointments = async (): Promise<number> => {
   today.setHours(0, 0, 0, 0); // Set the time to midnight to compare only the date part
 
   const result = await Appointment.deleteMany({
-    date: { $lt: today },
+    date: {$lt: today},
   });
   return result.deletedCount || 0;
 };

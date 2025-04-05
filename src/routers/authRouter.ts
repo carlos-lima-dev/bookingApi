@@ -1,21 +1,21 @@
-import { Router } from "express";
-import { login } from "../controllers/authController";
+import {Router} from "express";
+import {login} from "../controllers/authController";
 
 const router = Router();
 
 /**
  * @swagger
  * tags:
- *   name: Autenticação
- *   description: Login do usuário para acesso ao dashboard
+ *   name: Authentication
+ *   description: User login to access the dashboard
  */
 
 /**
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Realiza login do usuário e retorna um token JWT
- *     tags: [Autenticação]
+ *     summary: Authenticates the user and returns a JWT token
+ *     tags: [Authentication]
  *     requestBody:
  *       required: true
  *       content:
@@ -31,10 +31,10 @@ const router = Router();
  *                 example: admin
  *               password:
  *                 type: string
- *                 example: supersecreto123
+ *                 example: supersecreto12 add 3 for correct password
  *     responses:
  *       200:
- *         description: Login bem-sucedido
+ *         description: Successful login
  *         content:
  *           application/json:
  *             schema:
@@ -42,12 +42,12 @@ const router = Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Login bem-sucedido
+ *                   example: Successful login
  *                 token:
  *                   type: string
  *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *       401:
- *         description: Credenciais inválidas
+ *         description: Invalid credentials
  *         content:
  *           application/json:
  *             schema:
@@ -55,7 +55,7 @@ const router = Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Credenciais inválidas
+ *                   example: Invalid credentials
  */
 
 router.post("/login", login);
