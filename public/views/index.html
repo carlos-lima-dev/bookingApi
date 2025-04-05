@@ -1,164 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Appointments API</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --primary-color: #2a292a4a;
-        --bg-color: #f2f2f2;
-        --text-color: #212529;
-        --accent-color: #ffc107;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Appointments API</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #00A881;
+      /* Updated to your new color */
+      --bg-color: #f2f2f2;
+      --text-color: #212529;
+      --accent-color: #f2f2f2;
+      --footer-bg-color: #00A881;
+      /* Updated footer to match primary color */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    header .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    header nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-weight: 500;
+      position: relative;
+    }
+
+    header nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 0%;
+      height: 2px;
+      background-color: var(--accent-color);
+      transition: width 0.3s ease;
+    }
+
+    header nav a:hover::after {
+      width: 100%;
+    }
+
+    main.container {
+      flex: 1;
+      max-width: 1500px;
+      margin: 3rem 2rem;
+      background-color: #fff;
+      padding: 3rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #555;
+    }
+
+    footer {
+      background-color: var(--footer-bg-color);
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      margin-top: 3rem;
+    }
+
+    footer p {
+      color: #fff;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
       }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
+    }
 
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
+    @media (max-width: 768px) {
 
-      header {
-        background-color: var(--primary-color);
-        color: #fff;
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      }
 
       header .logo {
         font-size: 1.5rem;
-        font-weight: 700;
-        letter-spacing: 1px;
+      }
+
+      header nav {
+        display: flex;
+        flex-direction: column;
       }
 
       header nav a {
-        color: #fff;
-        text-decoration: none;
-        margin-left: 1.5rem;
-        font-weight: 500;
-        position: relative;
-      }
-
-      header nav a::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -4px;
-        width: 0%;
-        height: 2px;
-        background-color: var(--accent-color);
-        transition: width 0.3s ease;
-      }
-
-      header nav a:hover::after {
-        width: 100%;
+        margin-left: 0;
+        margin-top: 0.5rem;
       }
 
       main.container {
-        flex: 1;
-        max-width: 800px;
-        margin: 3rem auto;
-        background-color: #fff;
-        padding: 3rem 2rem;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        text-align: center;
-        animation: fadeIn 0.6s ease-out;
+        margin: 2rem 1rem;
+        padding: 2rem 1rem;
       }
 
       h1 {
-        font-size: 2.5rem;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
+        font-size: 2.3rem;
       }
 
       p {
-        font-size: 1.125rem;
-        color: #555;
-        margin-bottom: 2rem;
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 1rem;
       }
 
-      footer {
-        background-color: var(--primary-color);
-        color: #fff;
-        text-align: center;
-        padding: 1rem;
+      h1 {
+        font-size: 2rem;
+      }
+
+      p {
         font-size: 0.9rem;
       }
-      footer p {
-        color: #fff;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+    }
+  </style>
+</head>
 
-      @media (max-width: 600px) {
-        main.container {
-          margin: 2rem 1rem;
-          padding: 2rem 1rem;
-        }
+<body>
+  <header class="">
+    <div class="logo">AppointmentsAPI</div>
+    <nav>
+      <a href="https://github.com/carlos-lima-dev/bookingApi" target="_blank">GitHub</a>
+    </nav>
+  </header>
 
-        h1 {
-          font-size: 2rem;
-        }
+  <main class="container">
+    <h1>Welcome to the Appointments API</h1>
+    <p>
+      This API helps you manage appointments effortlessly. Browse the
+      <strong>documentation</strong>, integrate endpoints, and start building
+      powerful tools for your business.
+    </p>
+    <a href="/api-docs/" style="text-decoration: none;">
+      <button
+        style="background-color: var(--primary-color); color: #fff;margin-top: 1rem; border: none; padding: 1rem 2rem; font-size: 1.1rem; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;">
+        View API Docs
+      </button>
+    </a>
+  </main>
 
-        p {
-          font-size: 1rem;
-        }
+  <footer>
+    <p>&copy; 2024 Carlos Lima. All rights reserved.</p>
+  </footer>
+</body>
 
-        header nav a {
-          margin-left: 1rem;
-          font-size: 0.95rem;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <header class="">
-      <div class="logo">AppointmentsAPI</div>
-      <nav>
-        <a href="https://github.com/carlos-lima-dev/bookingApi" target="_blank"
-          >GitHub</a
-        >
-        <a href="/api-docs/">Docs</a>
-      </nav>
-    </header>
-
-    <main class="container">
-      <h1>Welcome to the Appointments API</h1>
-      <p>
-        This API helps you manage appointments effortlessly. Browse the
-        <strong>documentation</strong>, integrate endpoints, and start building
-        powerful tools for your business.
-      </p>
-    </main>
-
-    <footer>
-      <p>&copy; 2024 Carlos Lima. All rights reserved.</p>
-    </footer>
-  </body>
 </html>
