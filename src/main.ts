@@ -9,6 +9,7 @@ import path from "path";
 import SetupSwagger from "./docs/swagger";
 import homeRoutes from "./routers/homeRoutes";
 import appointmentsRouter from "./routers/appointmentsRouter";
+import emailRouter from "./routers/emailRouter";
 import authRouter from "./routers/authRouter";
 import scheduleDailyCleanup from "./scheduler";
 
@@ -38,7 +39,7 @@ app.use("/", homeRoutes);
 // API Routes
 app.use("/appointments", appointmentsRouter);
 app.use("/auth", authRouter);
-
+app.use("/form", emailRouter);
 const startApp = async () => {
   try {
     mongoose.set("strictQuery", true);
